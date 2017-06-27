@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { Platform } from 'ionic-angular';
+
+declare var FCMPlugin: any;
 
 @Component({
   selector: 'page-home',
@@ -7,8 +9,26 @@ import { NavController } from 'ionic-angular';
 })
 export class HomePage {
 
-  constructor(public navCtrl: NavController) {
+  constructor(private platform: Platform) {
+    this.platform.ready().then(() => {
+      if(typeof(FCMPlugin) !== "undefined"){
+        FCMPlugin.getToken(function(t){
+          alert(JSON.stringify(t));
+        }, function(e){
+          console.log("Uh-Oh!\n"+e);
+        });
 
+        FCMPlugin.onNotification(function(d){
+          alert(JSON.stringify(d));
+          }, function(msg){
+            alert(JSON.stringify(msg));
+          }, function(err){
+            alert(JSON.stringify(err));
+          });
+
+      }
+    });
   }
+
 
 }
